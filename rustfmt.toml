@@ -1,0 +1,13 @@
+edition = "2024"
+style_edition = "2024"
+use_small_heuristics = "Max"
+fn_args_layout = "Tall"
+max_width = 100
+reorder_modules = true
+wrap_comments = true
+normalize_comments = true
+use_try_shorthand = true
+match_block_trailing_comma = true
+use_field_init_shorthand = true
+condense_wildcard_suffixes = true
+imports_granularity = "Crate"

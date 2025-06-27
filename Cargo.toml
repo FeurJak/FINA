@@ -1,0 +1,28 @@
+[workspace]
+
+members = [
+"lib/primitives",
+]
+
+resolver = "2"
+
+[workspace.package]
+version = "1.0.0-beta.1"
+authors = ["Vomer <tarasworonjanski@gmail.com>"]
+edition = "2024"
+rust-version = "1.85.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/0xVomer/FINA/"
+
+[workspace.lints.rust]
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+
+[workspace.dependencies]
+fina-primitives = { path = "lib/primitives" }
+zeroize = { version = "1.8.1", features = ["derive"] }
+num-traits = "0.2.14"
+proptest = "1"
+educe = "0.6.0"
