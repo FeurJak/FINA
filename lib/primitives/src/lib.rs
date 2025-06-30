@@ -6,6 +6,9 @@ extern crate alloc;
 extern crate core;
 
 pub mod arithmetic;
-pub mod common;
+pub mod bits;
 pub mod curve;
 pub mod field;
+
+pub use fina_common::*;
+pub use fina_serialize::*;

@@ -1,4 +1,4 @@
-use crate::common::bits::BitIteratorBE;
+use crate::bits::BitIteratorBE;
 use alloc::vec::Vec;
 use core::{
     fmt::{Debug, Display},

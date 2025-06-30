@@ -1,13 +1,5 @@
-//! Bit manipulation utilities.
-
-/// Iterates over bits in big-endian order.
 pub trait BitIteratorBE: Sized {
-    /// Returns an iterator over the bits of the integer, starting from the most
-    /// significant bit.
     fn bit_be_iter(self) -> impl Iterator<Item = bool>;
-
-    /// Returns an iterator over the bits of the integer, starting from the most
-    /// significant bit, and without leading zeroes.
     fn bit_be_trimmed_iter(self) -> impl Iterator<Item = bool> {
         self.bit_be_iter().skip_while(|&b| !b)
     }

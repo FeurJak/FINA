@@ -8,7 +8,7 @@ use crate::{
         limb,
         limb::{Limb, Limbs},
     },
-    common::bits::BitIteratorBE,
+    bits::BitIteratorBE,
     ct_for, ct_for_unroll6, ct_rev_for,
 };
 use alloc::vec::Vec;
@@ -730,12 +730,6 @@ impl<const N: usize> BitIteratorBE for Uint<N> {
     }
 }
 
-impl BitIteratorBE for &[Limb] {
-    fn bit_be_iter(self) -> impl Iterator<Item = bool> {
-        self.iter().rev().copied().flat_map(Limb::bit_be_iter)
-    }
-}
-
 /// Parse a number from a string in a given radix.
 ///
 /// This implementation can be slow on big numbers and possibly fail constant
@@ -933,7 +927,7 @@ mod test {
             limb::Limb,
             uint::{Uint, WideUint, from_str_hex, from_str_radix},
         },
-        common::bits::BitIteratorBE,
+        bits::BitIteratorBE,
         from_num,
     };
 

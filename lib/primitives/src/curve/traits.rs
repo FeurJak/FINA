@@ -3,7 +3,7 @@ mod curve;
 mod group;
 
 use crate::{
-    common::bits::BitIteratorBE,
+    bits::BitIteratorBE,
     field::traits::{AdditiveGroup, Field, PrimeField},
 };
 pub use affine::AffineRepr;

@@ -6,7 +6,7 @@ use super::{
     AdditiveGroup, Affine, AffineRepr, CurveGroup, Field, PrimeField, PrimeGroup, SWCurveConfig,
     batch_inversion, impl_additive_ops_from_ref,
 };
-use crate::common::bits::BitIteratorBE;
+use crate::bits::BitIteratorBE;
 use alloc::vec::Vec;
 use core::{
     borrow::Borrow,

@@ -5,6 +5,7 @@
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_lossless)]
 
+use crate::bits::BitIteratorBE;
 use num_traits::ConstOne;
 
 /// A single limb of a big integer represented by 64-bits.
@@ -17,6 +18,12 @@ pub type Limbs<const N: usize> = [Limb; N];
 ///
 /// Twice larger than [`Limb`].
 pub type WideLimb = u128;
+
+impl BitIteratorBE for &[Limb] {
+    fn bit_be_iter(self) -> impl Iterator<Item = bool> {
+        self.iter().rev().copied().flat_map(Limb::bit_be_iter)
+    }
+}
 
 /// Multiply two [`Limb`]'s and return widened result.
 #[inline(always)]

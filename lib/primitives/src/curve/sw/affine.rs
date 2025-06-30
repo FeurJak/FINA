@@ -3,7 +3,7 @@
 //!
 //! [Affine Space]: https://en.wikipedia.org/wiki/Affine_space
 use super::{AdditiveGroup, AffineRepr, Field, PrimeField, Projective, SWCurveConfig};
-use crate::common::bits::BitIteratorBE;
+use crate::bits::BitIteratorBE;
 use core::{
     borrow::Borrow,
     fmt::{Debug, Display, Formatter},

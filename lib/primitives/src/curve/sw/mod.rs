@@ -9,7 +9,7 @@ use super::{
     traits::{AffineRepr, CurveConfig, CurveGroup, PrimeGroup},
 };
 use crate::{
-    common::bits::BitIteratorBE,
+    bits::BitIteratorBE,
     field::traits::{AdditiveGroup, Field, PrimeField},
     impl_additive_ops_from_ref,
 };
