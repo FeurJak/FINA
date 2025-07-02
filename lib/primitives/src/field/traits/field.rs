@@ -1,4 +1,4 @@
-use super::{AdditiveGroup, k_adicity};
+use super::{AdditiveGroup, k_adicity, prime::PrimeField};
 use crate::{bits::BitIteratorBE, log2};
 use core::{
     fmt::{Debug, Display},
@@ -50,6 +50,8 @@ pub trait Field:
     + From<bool>
     + Product<Self>
 {
+    type BasePrimeField: PrimeField;
+
     /// The multiplicative identity of the field.
     const ONE: Self;
 
@@ -106,6 +108,24 @@ pub trait Field:
 
         // If res is empty, return one.
         res.unwrap_or(Self::ONE)
+    }
+
+    /// Exponentiates a field element `f` by a number represented with `u64`
+    /// limbs, using a precomputed table containing as many powers of 2 of
+    /// `f` as the 1 + the floor of log2 of the exponent `exp`, starting
+    /// from the 1st power. That is, `powers_of_2` should equal `&[p, p^2,
+    /// p^4, ..., p^(2^n)]` when `exp` has at most `n` bits.
+    ///
+    /// This returns `None` when a power is missing from the table.
+    #[inline]
+    fn pow_with_table<S: BitIteratorBE>(powers_of_2: &[Self], exp: S) -> Option<Self> {
+        let mut res = Self::ONE;
+        for (pow, bit) in exp.bit_be_trimmed_iter().enumerate() {
+            if bit {
+                res *= powers_of_2.get(pow)?;
+            }
+        }
+        Some(res)
     }
 
     /// Returns `sum([a_i * b_i])`.

@@ -1,9 +1,13 @@
-use super::field::Field;
+use super::field::{FftField, Field};
 use crate::arithmetic::bigint::BigInteger;
+
 /// Defines an abstract prime field.
 /// I.e., the field of integers of prime module [`Self::MODULUS`].
 pub trait PrimeField:
-    Field + From<<Self as PrimeField>::BigInt> + Into<<Self as PrimeField>::BigInt>
+    Field<BasePrimeField = Self>
+    + FftField
+    + From<<Self as PrimeField>::BigInt>
+    + Into<<Self as PrimeField>::BigInt>
 {
     /// A `BigInteger` type that can represent elements of this field.
     type BigInt: BigInteger;

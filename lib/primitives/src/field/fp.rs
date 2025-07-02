@@ -13,7 +13,7 @@
 //! where a particular ordering is required.
 //!
 //! [motgomery form]: https://en.wikipedia.org/wiki/Montgomery_modular_multiplication
-use super::traits::{AdditiveGroup, Field, PrimeField};
+use super::traits::{AdditiveGroup, FftField, Field, PrimeField};
 use crate::{
     arithmetic::{
         bigint::BigInteger,
@@ -57,6 +57,35 @@ pub trait FpParams<const N: usize>: Send + Sync + 'static + Sized {
     /// [`Self::GENERATOR`] is an element having multiplicative order
     /// `MODULUS - 1`.
     const GENERATOR: Fp<Self, N>;
+
+    /// Additive identity of the field, i.e. the element `e`
+    /// such that, for all elements `f` of the field, `e + f = f`.
+    const ZERO: Fp<Self, N>;
+
+    /// Multiplicative identity of the field, i.e. the element `e`
+    /// such that, for all elements `f` of the field, `e * f = f`.
+    const ONE: Fp<Self, N>;
+
+    /// Let `N` be the size of the multiplicative group defined by the field.
+    /// Then `TWO_ADICITY` is the two-adicity of `N`, i.e. the integer `s`
+    /// such that `N = 2^s * t` for some odd integer `t`.
+    const TWO_ADICITY: u32;
+
+    /// 2^s root of unity computed by GENERATOR^t
+    const TWO_ADIC_ROOT_OF_UNITY: Fp<Self, N>;
+
+    /// An integer `b` such that there exists a multiplicative subgroup
+    /// of size `b^k` for some integer `k`.
+    const SMALL_SUBGROUP_BASE: Option<u32> = None;
+
+    /// The integer `k` such that there exists a multiplicative subgroup
+    /// of size `Self::SMALL_SUBGROUP_BASE^k`.
+    const SMALL_SUBGROUP_BASE_ADICITY: Option<u32> = None;
+
+    /// GENERATOR^((MODULUS-1) / (2^s *
+    /// SMALL_SUBGROUP_BASE^SMALL_SUBGROUP_BASE_ADICITY)) Used for mixed-radix
+    /// FFT.
+    const LARGE_SUBGROUP_ROOT_OF_UNITY: Option<Fp<Self, N>> = None;
 
     /// `MODULUS` has a spare bit in the most significant limb.
     const HAS_MODULUS_SPARE_BIT: bool = Self::MODULUS.limbs[N - 1] >> 63 == 0;
@@ -453,6 +482,7 @@ impl<P: FpParams<N>, const N: usize> AdditiveGroup for Fp<P, N> {
 }
 
 impl<P: FpParams<N>, const N: usize> Field for Fp<P, N> {
+    type BasePrimeField = Self;
     const ONE: Self = Fp::new_unchecked(P::R);
 
     fn extension_degree() -> usize {
@@ -502,6 +532,15 @@ impl<P: FpParams<N>, const N: usize> PrimeField for Fp<P, N> {
     fn into_bigint(self) -> Uint<N> {
         P::into_bigint(self)
     }
+}
+
+impl<P: FpParams<N>, const N: usize> FftField for Fp<P, N> {
+    const GENERATOR: Self = P::GENERATOR;
+    const TWO_ADICITY: u32 = P::TWO_ADICITY;
+    const TWO_ADIC_ROOT_OF_UNITY: Self = P::TWO_ADIC_ROOT_OF_UNITY;
+    const SMALL_SUBGROUP_BASE: Option<u32> = P::SMALL_SUBGROUP_BASE;
+    const SMALL_SUBGROUP_BASE_ADICITY: Option<u32> = P::SMALL_SUBGROUP_BASE_ADICITY;
+    const LARGE_SUBGROUP_ROOT_OF_UNITY: Option<Self> = P::LARGE_SUBGROUP_ROOT_OF_UNITY;
 }
 
 impl<P: FpParams<N>, const N: usize> Ord for Fp<P, N> {
@@ -858,6 +897,10 @@ mod tests {
     impl FpParams<LIMBS_64> for Fp64Param {
         const GENERATOR: Fp64<Fp64Param> = fp_from_num!("3");
         const MODULUS: U64 = from_num!("1000003"); // Prime number
+        const ZERO: Fp64<Fp64Param> = fp_from_num!("0");
+        const ONE: Fp64<Fp64Param> = fp_from_num!("1");
+        const TWO_ADICITY: u32 = 1;
+        const TWO_ADIC_ROOT_OF_UNITY: Fp64<Fp64Param> = fp_from_num!("2");
     }
 
     const MODULUS: i128 = 1000003; // Prime number

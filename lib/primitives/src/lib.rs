@@ -9,6 +9,7 @@ pub mod arithmetic;
 pub mod bits;
 pub mod curve;
 pub mod field;
+pub mod polynomial;
 
-pub use fina_common::*;
-pub use fina_serialize::*;
+use fina_common::*;
+use fina_serialize::*;

@@ -47,6 +47,7 @@
 pub mod fp;
 pub mod macros;
 pub mod traits;
+pub mod vec;
 
 use crate::{
     arithmetic::{U64, U256},
